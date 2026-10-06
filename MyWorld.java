@@ -3,33 +3,46 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class MyWorld extends World{
 
     boolean test = true;
+    private int chunkSize;
+    private int worldWidth, worldHeight;
     private SimplexNoise noise;
-    private Chunk chunk00, chunk01, chunk02, chunk03;
-    
+    private Chunk[][] chunks;
+    private Camera cam; //For Movement
+    private WorldDrawer worldDrawer;
+
     public MyWorld(){
-        super(600, 400, 1);
-        
+        super(1400, 800, 1);
+
+        chunkSize = 16;
+        worldWidth = 5 * 16;
+        worldHeight = 2 * 16;
         noise = new SimplexNoise();
-        chunk00 = new Chunk(0, 0, 16, noise);
-        chunk01 = new Chunk(0, -1, 16, noise);
-        chunk02 = new Chunk(0, -2, 16, noise);
-        chunk03 = new Chunk(0, -3, 16, noise);
+        chunks = new Chunk[worldWidth / chunkSize][worldHeight / chunkSize];
+
+        for(int chunkX = 0; chunkX < (worldWidth / chunkSize); chunkX++){
+            for(int chunkY = 0; chunkY < (worldHeight / chunkSize); chunkY++){
+                chunks[chunkX][chunkY] = new Chunk(chunkX, chunkY, chunkSize, noise);
+            }
+        }
+        cam = new Camera();
+        worldDrawer = new WorldDrawer(cam, chunkSize, chunks);
+
+        // test();
         
-        test();
+        addObject(cam, 0, 0);
+        addObject(worldDrawer, 0, 0);
     }
 
     public void act(){
-        if(test == true){
-            test();
-            test = false;
+        
+    }
+
+    public void test(){
+        for(int x = 0; x < worldWidth; x++){
+            for(int y = 0; y < worldHeight; y++){
+                System.out.print((int) (chunks[x / chunkSize][y / chunkSize].getHeightMapXY(x % chunkSize, y % chunkSize)) + " ");
+            }
+            System.out.println();
         }
     }
-    
-    public void test(){
-        chunk00.test();
-        chunk01.test();
-        chunk02.test();
-        chunk03.test();
-    }
-    
 }
